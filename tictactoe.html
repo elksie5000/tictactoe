@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+        <style>
+        	body
+        	{
+        		font-family: 'Roboto', sans-serif;
+        	}
+
+            td
+            {
+                border: 1px solid black;
+                width:200px;
+                height:200px;
+                text-align:center;
+                font-size: 100px;
+                
+            }
+
+            #result	{
+            			font-size: 50px;
+            		}
+            
+        </style>
+        
+    </head>
+    <body>
+		<div ><p id="turn_box"></p></div>
+		<table>
+            <tr>
+                <td id="1" onclick="clicked(1);"></td>
+                <td id="2" onclick="clicked(2);"></td>
+                <td id="3" onclick="clicked(3);"></td>
+            </tr>
+            <tr>
+                <td id="4" onclick="clicked(4);"></td>
+                <td id="5" onclick="clicked(5);"></td>
+                <td id="6" onclick="clicked(6);"></td>
+            </tr>
+            <tr>
+                <td id="7" onclick="clicked(7);"></td>
+                <td id="8" onclick="clicked(8);"></td>
+                <td id="9" onclick="clicked(9);"></td>
+            </tr>
+        </table>
+       	<div id="result"></div> 		
+    </body>
+	<script>
+			var nextGo;
+			var player1Selections = new Array();
+			var player2Selections = new Array();
+			var currentPlayerYou = true;	
+			var openSquares = [1,2,3,4,5,6,7,8,9];
+			var index;
+			var win_status;
+			
+			//Initialise winning combinations
+			var win_combination = new Array();
+			function loadAnswers(){
+					win_combination.push([1, 2, 3]);
+					win_combination.push([4, 5, 6]);
+					win_combination.push([7, 8, 9]);
+					win_combination.push([1, 4, 7]);
+					win_combination.push([2, 5, 8]);
+					win_combination.push([3, 6, 9]);
+					win_combination.push([1, 5, 9]);
+					win_combination.push([3, 5, 7]);
+			};
+			loadAnswers(); // these are the winning combinations
+			
+			
+			function updatePlayerDisplay(){ 
+				if (currentPlayerYou == true){
+					document.getElementById("turn_box").innerHTML = "Your turn";
+					} else {
+					document.getElementById("turn_box").innerHTML = "My turn"
+				}
+			};
+				
+			function switchPlayer(){
+					if (currentPlayerYou == true){
+					currentPlayerYou = false
+					}
+					else {
+					currentPlayerYou = true
+					}
+			};
+				
+			updatePlayerDisplay();
+			
+			function checkwin(){
+				var count = 0;
+				if (currentPlayerYou == true){
+					plays = player1Selections;
+				} else{
+					plays = player2Selections;
+				};
+
+				if (currentPlayerYou.length < 3){
+					console.log("not enough to win");
+					break;
+				}
+
+				for (k=0; k < plays.length; k++){
+					for (i=0;i<win_combination.length;i++){
+						var won = true;
+						for (j=0;j<win_combination[i].length;j++){
+							//console.log(plays[k] + ":" + win_combination[i][j])
+							if (plays.indexOf(win_combination[i][j]) == -1){
+								count ++;
+								}
+							console.log("pass count: " + count);	
+							}
+								
+						}
+					}
+				};
+				
+			
+			function win_screen(winner, plays){
+				if (winner){
+					document.getElementById("result").innerHTML = "You win!"
+				} else{
+					document.getElementById("result").innerHTML = "You lost!"
+				}
+
+			}
+
+
+			function clicked(id) {
+					
+					
+					if (currentPlayerYou == true){
+						nextGo = "X";
+						player1Selections.push(id);
+						
+
+					} else {
+						nextGo = "O";
+						player2Selections.push(id);
+
+						
+					};
+					if (currentPlayerYou == true){
+							plays = player1Selections;
+						} else{
+							plays = player2Selections;
+						};
+					var result = win_combination.some(function(ar) {
+						  			return ar.every(function(e) {
+						    			return plays.indexOf(e) != -1
+						  			})
+								})
+					
+					if (result){
+						win_screen(currentPlayerYou, plays);
+					}
+
+					idx = openSquares.indexOf(id)
+					openSquares.splice(idx, 1);
+					
+					switchPlayer();
+					
+					
+					var x = document.getElementById(id).innerHTML = nextGo;
+					updatePlayerDisplay();
+
+					
+					
+					
+			      };
+			</script>
+</html>
